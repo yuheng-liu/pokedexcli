@@ -11,6 +11,7 @@ func callbackExplore(cfg *config, args ...string) error {
 	}
 	locationAreaName := args[0]
 
+	// api call to get area info, list of available pokemons
 	locationArea, err := cfg.pokeapiClient.GetLocationArea(locationAreaName)
 	if err != nil {
 		return err

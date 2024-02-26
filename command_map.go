@@ -6,6 +6,7 @@ import (
 )
 
 func callbackMap(cfg *config, args ...string) error {
+	// retrieve locations via api call
 	resp, err := cfg.pokeapiClient.ListLocationAreas(cfg.nextLocationAreaURL)
 	if err != nil {
 		return err
@@ -14,15 +15,17 @@ func callbackMap(cfg *config, args ...string) error {
 	for _, area := range resp.Results {
 		fmt.Printf(" - %s\n", area.Name)
 	}
+	// used for pagination of locations results
 	cfg.nextLocationAreaURL = resp.Next
 	cfg.prevLocationAreaURL = resp.Previous
 	return nil
 }
 
-func callbackMapb(cfg *config, args ...string) error {
+func callbackMapback(cfg *config, args ...string) error {
 	if cfg.prevLocationAreaURL == nil {
 		return errors.New("you're on the first page")
 	}
+	// retrieve locations via api call
 	resp, err := cfg.pokeapiClient.ListLocationAreas(cfg.prevLocationAreaURL)
 	if err != nil {
 		return err
@@ -31,6 +34,7 @@ func callbackMapb(cfg *config, args ...string) error {
 	for _, area := range resp.Results {
 		fmt.Printf(" - %s\n", area.Name)
 	}
+	// used for pagination of locations results
 	cfg.nextLocationAreaURL = resp.Next
 	cfg.prevLocationAreaURL = resp.Previous
 	return nil

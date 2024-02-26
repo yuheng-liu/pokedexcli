@@ -7,33 +7,41 @@ import (
 	"strings"
 )
 
+// main entry point for the REPL tool, handles at high level the command and operations
 func startRepl(cfg *config) {
+	// scanner used to take in user input in the command line
 	scanner := bufio.NewScanner(os.Stdin)
 
+	// infinite for loop to keep the program running until killed or "exit" command
 	for {
 		fmt.Print("pokedex > ")
 
+		// scan and convert input to string text
 		scanner.Scan()
 		text := scanner.Text()
 
+		// convert input string to commands and arguments
 		cleaned := cleanInput(text)
 		if len(cleaned) == 0 {
 			continue
 		}
 
+		// get command name from first index of cleaned
 		commandName := cleaned[0]
+		// remaining index of cleaned is args
 		args := []string{}
 		if len(cleaned) > 1 {
 			args = cleaned[1:]
 		}
 
-		availableComands := getCommands()
-
-		command, ok := availableComands[commandName]
+		// get and check if entered command is valid
+		availableCommands := getCommands()
+		command, ok := availableCommands[commandName]
 		if !ok {
 			fmt.Println("invalid command")
 			continue
 		}
+		// do actions of entered command and return error otherwise
 		err := command.callback(cfg, args...)
 		if err != nil {
 			fmt.Println(err)
@@ -41,6 +49,7 @@ func startRepl(cfg *config) {
 	}
 }
 
+// struct to represent commands, callbacks of commands can be passed around as func
 type cliCommand struct {
 	name        string
 	description string
@@ -48,6 +57,7 @@ type cliCommand struct {
 }
 
 func getCommands() map[string]cliCommand {
+	// a map of all available commands
 	return map[string]cliCommand{
 		HELP: {
 			name:        HELP,
@@ -59,10 +69,10 @@ func getCommands() map[string]cliCommand {
 			description: "Lists the next page of location areas",
 			callback:    callbackMap,
 		},
-		MAPB: {
-			name:        MAPB,
+		MAPBACK: {
+			name:        MAPBACK,
 			description: "Lists the previous page of location areas",
-			callback:    callbackMapb,
+			callback:    callbackMapback,
 		},
 		EXPLORE: {
 			name:        EXPLORE + " {location_name}",
@@ -101,7 +111,7 @@ func cleanInput(str string) []string {
 const (
 	HELP    = "help"
 	MAP     = "map"
-	MAPB    = "mapb"
+	MAPBACK = "mapback"
 	EXPLORE = "explore"
 	CATCH   = "catch"
 	INSPECT = "inspect"

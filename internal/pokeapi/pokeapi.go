@@ -9,6 +9,7 @@ import (
 
 const baseURL = "https://pokeapi.co/api/v2"
 
+// struct representing local client to make https calls
 type Client struct {
 	cache      pokecache.Cache
 	httpClient http.Client
@@ -16,7 +17,9 @@ type Client struct {
 
 func NewClient(cacheInterval time.Duration) Client {
 	return Client{
+		// adds cache function to local client
 		cache: pokecache.NewCache(cacheInterval),
+		// standard library http that allows configuring of timeout
 		httpClient: http.Client{
 			Timeout: time.Minute,
 		},

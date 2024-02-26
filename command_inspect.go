@@ -11,6 +11,7 @@ func callbackInpect(cfg *config, args ...string) error {
 	}
 	pokemonName := args[0]
 
+	// check local variable to see if pokemon is caught before
 	pokemon, ok := cfg.caughtPokemon[pokemonName]
 	if !ok {
 		return errors.New("you haven't caught this pokemon yet")
