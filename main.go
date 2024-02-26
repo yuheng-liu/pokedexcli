@@ -1,19 +1,23 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"time"
 
 	"github.com/yuheng-liu/pokedexcli/internal/pokeapi"
 )
 
-func main() {
-	// startRepl()
-	pokeapiClient := pokeapi.NewClient()
+type config struct {
+	pokeapiClient       pokeapi.Client
+	nextLocationAreaURL *string
+	prevLocationAreaURL *string
+	caughtPokemon       map[string]pokeapi.Pokemon
+}
 
-	resp, err := pokeapiClient.ListLocationAreas()
-	if err != nil {
-		log.Fatal(err)
+func main() {
+	cfg := config{
+		pokeapiClient: pokeapi.NewClient(time.Hour),
+		caughtPokemon: make(map[string]pokeapi.Pokemon),
 	}
-	fmt.Println(resp)
+
+	startRepl(&cfg)
 }
